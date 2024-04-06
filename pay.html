@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="bootstrap-3.4.1/css/bootstrap.css" />
     <title>Bullish Prototype</title>
     <meta name="description" content="A bullish place to pay invoices." />
@@ -38,14 +38,15 @@
         <div class="jumbotron">
             <h1>BullishPay</h1>
             <p>Paste BOLT11 invoice below</p>
-            <input type="text" id="invoice" name="invoice">
+
+            <textarea id="invoice" cols="40" rows="5"></textarea>
             <br><br>
 
             <script type="module">
                 import 'https://esm.sh/@getalby/bitcoin-connect@3.2.2';
             </script>
 
-            <bc-pay-button></bc-pay-button>
+            <bc-pay-button onclick="payButtonClicked()"></bc-pay-button>
         </div>
 
     </div> <!-- /container -->
@@ -57,6 +58,16 @@
         integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
         crossorigin="anonymous"></script>
     <script src="bootstrap-3.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+
+        function payButtonClicked(){
+            var invoice = document.getElementById("invoice").value;
+            const button = document.querySelector("bc-pay-button");
+            button.setAttribute("invoice", invoice);
+        }
+
+    </script>
 
 </body>
 
