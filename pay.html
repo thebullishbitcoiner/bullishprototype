@@ -6,6 +6,13 @@
     <link rel="stylesheet" href="bootstrap-3.4.1/css/bootstrap.css" />
     <title>Bullish Prototype</title>
     <meta name="description" content="A bullish place to pay invoices." />
+
+    <style>
+        html {
+            --bc-color-brand: #ff9900; /* Only 6-digit hex and rgb formats are supported! */
+        }
+    </style>
+
 </head>
 
 <body>
@@ -38,9 +45,9 @@
         <div class="jumbotron">
 
             <h1>BullishPay</h1>
-            <button type="button" class="btn btn-primary" onclick="pasteButtonClicked()">Paste</button> BOLT11 invoice below <br><br>
+            <button type="button" class="btn btn-default" onclick="pasteButtonClicked()">Paste</button> BOLT11 invoice below <br><br>
 
-            <textarea id="invoice" style="width: 100%" rows="7"></textarea>
+            <textarea id="invoice" style="width: 100%" rows="8"></textarea>
             <br><br>
 
             <script type="module">
