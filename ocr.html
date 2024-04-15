@@ -1,0 +1,111 @@
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
+    <title>BullishPay</title>
+    <meta name="description" content="A bullish place to pay invoices." />
+
+    <style>
+        html {
+            --bc-color-brand: #ff9900; /* Only 6-digit hex and rgb formats are supported! */
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Bullish Prototype</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="pay.html">Pay</a></li>
+                        <li class="nav-item"><a class="nav-link" href="donate.html">Donate</a></li>
+                        <li class="nav-item"><a class="nav-link" href="wallet.html">Wallet</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <br>
+
+        <h1>Optimal Character Recognition (OCR)</h1>
+        <button type="button" class="btn btn-outline-light" onclick="lfgButtonClicked()">LFG</button>
+        
+        <br><br>
+
+        <textarea id="ocrText" style="width: 100%" rows="8"></textarea>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+    <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
+
+    <script>
+
+        function lfgButtonClicked() {
+            captureImageAndExtractText();
+        }
+
+        // Function to capture image from camera and extract text
+        async function captureImageAndExtractText() {
+            try {
+                // Access the user's camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                
+                // Create a video element and set the stream as its source
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+                
+                // Wait for the video to load metadata (including dimensions)
+                await new Promise(resolve => video.onloadedmetadata = resolve);
+                
+                // Create a canvas element to draw the video frame
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Draw the current video frame onto the canvas
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Stop the video stream
+                stream.getVideoTracks()[0].stop();
+                
+                // Extract image data from canvas
+                const imageData = canvas.toDataURL('image/jpeg');
+                
+                // Extract text from the captured image
+                const extractedText = await extractTextFromImage(imageData);
+                
+                // Output the extracted text
+                console.log('Extracted text:', extractedText);
+
+                // Update the value of the textarea with the extracted text
+                document.getElementById('extractedTextArea').value = extractedText;
+            } catch (error) {
+                console.error('Error capturing image and extracting text:', error);
+                return null;
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
