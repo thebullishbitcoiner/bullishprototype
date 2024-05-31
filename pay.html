@@ -51,7 +51,7 @@
                 import 'https://esm.sh/@getalby/bitcoin-connect@3.2.2';
             </script>
 
-            <bc-pay-button onclick="payButtonClicked()"></bc-pay-button>
+            <bc-pay-button onclick="payButtonClicked()" onpaid="invoicePaid()"></bc-pay-button>
 
         </div>
 
@@ -71,6 +71,10 @@
             var invoice = document.getElementById("invoice").value;
             const button = document.querySelector("bc-pay-button");
             button.setAttribute("invoice", invoice);
+        }
+
+        function invoicePaid(){
+            alert("Invoice paid!");
         }
 
         function pasteButtonClicked() {
