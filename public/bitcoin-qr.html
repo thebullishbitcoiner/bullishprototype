@@ -8,10 +8,6 @@
     <title>Bitcoin QR</title>
     <script type="module" src="https://unpkg.com/bitcoin-qr@1.1.4/dist/bitcoin-qr/bitcoin-qr.esm.js"></script>
 
-    <script>
-
-    </script>
-
 </head>
 
 <body>
@@ -61,7 +57,7 @@
         dots-type="classy-rounded"
         debug="true"
       /> -->
-            <bitcoin-qr id="qr" width="300" height="300"
+            <bitcoin-qr id="qr" width="350" height="350"
                 lightning="lnbc210n1pn3x858pp5pk3yd7ek92dvv02elrzsx654876e57a9fs60aqxvpchjqk2hqp2sdqvgf25cnzf2dyqcqzzsxqrrs0sp5mxz2fm4tsqf3r6rlqejjmmlgaqae0gn8fwn8txgrppm55f7sqc5s9qxpqysgqdt9e3edvsrc9d2mgjelugescyezcq2ehx9he4q2hee5f5yskx72njf68mfxrm8nhhf77n2n7wqe5tvn6tnx99peu2fyv2lkah9sgpaqplvfmrh"
                 is-polling="false" poll-interval="1000" image="./images/thebullishbitcoiner-1.0.png" type="svg"
                 corners-square-color="#000" corners-dot-color="#000" corners-square-type="extra-rounded"
@@ -100,116 +96,70 @@
       /> -->
         </div>
 
-        <div class="flex flex-col gap-2 w-100">
-            <textarea id="invoice" class="w-100" rows="5" readonly></textarea>
-            <span id="poll-count">Poll count: 0</span>
-            <span id="paid">Paid: false</span>
-            <button id="toggle" class="bg-[#ff5000] p-2 text-white rounded-lg" onclick="toggle()">Stop</button>
-            <button id="reset" class="bg-[#ff5000] p-2 text-white rounded-lg" onclick="reset()">Reset</button>
+        <div class="flex flex-col gap-2 w-100 pt-3">
+            <textarea id="invoice" class="w-100" rows="7" readonly></textarea>
+            <span id="paid">Paid: NO</span>
         </div>
 
     </div>
 
 </body>
 
-<script>
+<script type="module">
 
-    let pollCount = 0;
-    let paid = false;
-    let interval;
+    import { LightningAddress } from "https://esm.sh/@getalby/lightning-tools@5.0.0"; // jsdelivr.net, skypack.dev also work
 
-    async function callbackExample() {
-        pollCount += 1;
-        document.getElementById('poll-count').innerText = `Poll count: ${pollCount}`;
-        if (pollCount >= 5) {
-            isPolling = false;
-            paid = true;
-            alert('Paid!');
+    let lightningInvoice;
+
+    async function checkPayment() {
+        const paid = await lightningInvoice.verifyPayment();
+        if (paid && lightningInvoice.preimage) {
+            console.log(`Preimage: ${lightningInvoice.preimage}`);
+            alert('Invoice paid!');
+            document.getElementById('paid').innerText = `Paid: YES`;
+
             const qr = document.getElementById('qr');
             qr.setAttribute('is-polling', false);
-            document.getElementById('paid').innerText = `Paid: ${paid}`;
         }
     }
 
-    async function  checkPayment() {
-        const paid = await lightningInvoice.verifyPayment();
-
-    }
-
-     const checkPaymentInterval = setInterval(async () => {
-      const paid = await lightningInvoice.verifyPayment();
-      if (paid && lightningInvoice.preimage) {
-        console.log(`Preimage: ${lightningInvoice.preimage}`);
-        preimage.value = lightningInvoice.preimage;
-        clearInterval(checkPaymentInterval);
-      }
-    }, 3000);
-
-
-
-    async function reset() {
-        pollCount = 0;
-        paid = false;
-        isPolling = true;
-        document.getElementById('toggle').innerText = 'Stop';
-        document.getElementById('poll-count').innerText = `Poll count: ${pollCount}`;
-        document.getElementById('paid').innerText = `Paid: ${paid}`;
-    }
-
-    async function toggle() {
-        const qr = document.getElementById('qr');
-        const isPolling = qr.getAttribute('is-polling') === 'true';
-        qr.setAttribute('is-polling', !isPolling);
-        const toggle = document.getElementById('toggle');
-        toggle.innerText === 'Stop' ? (toggle.innerText = 'Start') : (toggle.innerText = 'Stop');
-        clearTimeout(interval);
-    }
-
     async function getNewInvoice(sats = 21) {
-        const callbackURL = 'https://getalby.com/lnurlp/bullish/callback';
-        millisats = sats * 1000; //Convert to millisats
-
-        //Wait to get invoice using callback URL
-        let invoice;
         try {
-            invoice = await fetchInvoiceFromCallback(callbackURL, millisats);
+            const ln = new LightningAddress('bullish@getalby.com');
+            await ln.fetch();
+            lightningInvoice = await ln.requestInvoice({ satoshi: sats });
 
             var textarea = document.getElementById('invoice');
-            textarea.value = invoice;
+            textarea.value = lightningInvoice.paymentRequest;
 
             const qr = document.getElementById('qr');
-            qr.setAttribute('lightning', invoice);
+            qr.setAttribute('lightning', lightningInvoice.paymentRequest);
+            qr.setAttribute('is-polling', true);
+
+            document.getElementById('paid').innerText = `Paid: NO`;
         } catch (error) {
             alert("Failed to fetch invoice. Operation timed out.");
             return;
         }
     }
 
-    async function fetchInvoiceFromCallback(callbackURL, amount) {
-    const url = new URL(callbackURL);
-    const params = {
-        amount: amount,
-    };
-    url.search = new URLSearchParams(params).toString();
+    // Function to copy text from the textarea to the clipboard
+    document.getElementById('invoice').addEventListener('click', function () {
+        // Select the text in the textarea
+        this.select();
+        this.setSelectionRange(0, 99999); // For mobile devices
 
-    try {
-        console.log(`Fetching invoice from ${url}`);
-        const response = await fetch(url);
+        // Copy the text to the clipboard
+        navigator.clipboard.writeText(this.value)
+            .then(() => {
+                alert('Invoice copied to clipboard!');
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+    });
 
-        if (!response.ok) {
-            throw new Error(`Failed to fetch invoice. HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data.pr;
-    } catch (error) {
-        console.error('Error fetching invoice:', error);
-        throw new Error(`Failed to fetch invoice. Error: ${error.message}`);
-    }
-}
-
-
-    document.getElementById('qr').callback = callbackExample;
+    document.getElementById('qr').callback = checkPayment;
 
     window.onload = getNewInvoice();
 
