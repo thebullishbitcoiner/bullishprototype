@@ -14,16 +14,26 @@
         }
 
         .lightning {
-            position: absolute;
-            width: 100px;
-            /* Adjust size as needed */
-            height: auto;
+            position: fixed;
+            /* Use fixed positioning to cover the viewport */
+            top: -50;
+            /* Start at the top */
+            left: 0;
+            /* Start at the left */
+            width: 100vw;
+            /* Full viewport width */
+            height: 100vh;
+            /* Full viewport height */
             pointer-events: none;
             /* Prevent interaction */
             opacity: 0;
             /* Start invisible */
             transition: opacity 0.2s ease-in-out;
             /* Smooth fade-in/out */
+            z-index: 1000;
+            /* Ensure lightning is on top */
+            object-fit: cover;
+            /* Ensure the image covers the area */
         }
     </style>
 </head>
@@ -54,7 +64,7 @@
 
         <br>
 
-        <h3>&lt;bitcoin-qr /&gt;</h3>
+        <h3 id="header">&lt;bitcoin-qr /&gt;</h3>
         <p>"A zero-dependency, zero-framework QR code web component for Bitcoin on-chain, Lightning, and unified BIP-21
             payments."</p>
         <p>View on <a href="https://github.com/thebrandonlucas/bitcoin-qr">GitHub</a></p>
@@ -118,8 +128,6 @@
 
     // Function to copy text from the textarea to the clipboard
     document.getElementById('invoice').addEventListener('click', function () {
-        simulateLightning();
-
         // Select the text in the textarea
         this.select();
         this.setSelectionRange(0, 99999); // For mobile devices
@@ -134,43 +142,56 @@
             });
     });
 
+    document.getElementById('header').addEventListener('click', function () {
+        //simulateLightning();
+    });
+
     const lightningImages = [
-            'images/lightning1.png', // Replace with your image paths
-            'images/lightning2.png',
-            'images/lightning3.png',
-            // Add more images as needed
-        ];
+        'images/lightning1.png', 
+        'images/lightning2.png',
+        'images/lightning3.png',
+        'images/lightning4.png',
+        'images/lightning5.png',
+        'images/lightning6.png',
+        'images/lightning7.png', 
+        'images/lightning8.png',
+    ];
 
     function simulateLightning() {
-        // Create a new image element
-        const lightning = document.createElement('img');
-        lightning.src = lightningImages[Math.floor(Math.random() * lightningImages.length)];
-        lightning.className = 'lightning';
+        const numberOfLightnings = 2; // Number of lightning images to show
+        const lightningElements = []; // Array to hold lightning elements
 
-        // Set random position
-        lightning.style.left = Math.random() * window.innerWidth + 'px';
-        lightning.style.top = Math.random() * window.innerHeight + 'px';
+        for (let i = 0; i < numberOfLightnings; i++) {
+            // Create a new image element
+            const lightning = document.createElement('img');
+            lightning.src = lightningImages[Math.floor(Math.random() * lightningImages.length)];
+            lightning.className = 'lightning';
 
-        // Append to body
-        document.body.appendChild(lightning);
+            // Append to body
+            document.body.appendChild(lightning);
+            lightningElements.push(lightning); // Store the lightning element
 
-        // Trigger the lightning effect
-        setTimeout(() => {
-            lightning.style.opacity = 1; // Fade in
-        }, 10); // Small delay to ensure the image is rendered
-
-        // Remove the lightning after a short duration
-        setTimeout(() => {
-            lightning.style.opacity = 0; // Fade out
+            // Trigger the lightning effect
             setTimeout(() => {
-                document.body.removeChild(lightning); // Remove from DOM
-            }, 200); // Wait for fade-out transition
-        }, 200); // Duration of the lightning effect
+                lightning.style.opacity = 1; // Fade in
+            }, 10); // Small delay to ensure the image is rendered
+
+            // Remove the lightning after a short duration
+            setTimeout(() => {
+                lightning.style.opacity = 0; // Fade out
+                setTimeout(() => {
+                    document.body.removeChild(lightning); // Remove from DOM
+                }, 500); // Wait for fade-out transition
+            }, 500); // Duration of the lightning effect
+        }
+
+        // Optional: Shuffle the lightning elements for random order
+        lightningElements.sort(() => Math.random() - 0.5);
     }
 
     document.getElementById('qr').callback = checkPayment;
 
-    //window.onload = getNewInvoice();
+    window.onload = getNewInvoice();
 
 </script>
 
