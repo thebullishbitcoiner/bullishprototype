@@ -9,11 +9,18 @@ const ndk = new NDK({
     ]
 });
 
-// Initialize markdown-it
-const md = window.markdownit({
-    html: true,
-    linkify: true,
-    typographer: true
+// Initialize markdown-it after the script is loaded
+let md;
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof window.markdownit === 'function') {
+        md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
+        });
+    } else {
+        console.error('markdown-it not loaded');
+    }
 });
 
 // Cache for profile names
@@ -53,74 +60,53 @@ async function replaceNostrMentions(content) {
 }
 
 // Connect button handler
-document.getElementById('connectBtn').addEventListener('click', async () => {
+document.getElementById('connect-button').addEventListener('click', async () => {
     try {
         await ndk.connect();
-        document.getElementById('connectionStatus').className = 'alert alert-success';
-        document.getElementById('connectionStatus').textContent = 'Connected to NDK!';
+        document.getElementById('connection-status').className = 'alert alert-success';
+        document.getElementById('connection-status').textContent = 'Connected to NDK!';
         
         // Enable the fetch profile button
-        document.getElementById('fetchProfileBtn').disabled = false;
+        document.getElementById('fetch-profile-button').disabled = false;
         
         // Subscribe to some events after connection
         subscribeToEvents();
     } catch (error) {
-        document.getElementById('connectionStatus').className = 'alert alert-danger';
-        document.getElementById('connectionStatus').textContent = 'Connection failed: ' + error.message;
+        document.getElementById('connection-status').className = 'alert alert-danger';
+        document.getElementById('connection-status').textContent = 'Connection failed: ' + error.message;
     }
 });
 
 // Fetch profile button handler
-document.getElementById('fetchProfileBtn').addEventListener('click', async () => {
+document.getElementById('fetch-profile-button').addEventListener('click', async () => {
     try {
-        const user = ndk.getUser({ pubkey: "a10260a2aa2f092d85e2c0b82e95eac5f8c60ea19c68e4898719b58ccaa23e3e" });
+        const npub = document.getElementById('npub-input').value;
+        if (!npub) {
+            throw new Error('Please enter an NPUB');
+        }
+
+        const user = ndk.getUser({ npub: npub });
         const profile = await user.fetchProfile();
         
-        // Update profile card
-        const profileCard = document.getElementById('profileCard');
-        const profileImage = document.getElementById('profileImage');
-        const profileName = document.getElementById('profileName');
-        const profileAbout = document.getElementById('profileAbout');
-        const profileLinks = document.getElementById('profileLinks');
-        
-        // Set profile image
-        if (profile.image) {
-            profileImage.src = profile.image;
-            profileImage.style.display = 'block';
-        } else {
-            profileImage.style.display = 'none';
-        }
-        
-        // Set name
-        profileName.textContent = profile.name || 'Anonymous';
-        
-        // Set about
-        profileAbout.textContent = profile.about || '';
-        
-        // Set links
-        profileLinks.innerHTML = '';
-        if (profile.website) {
-            const websiteLink = document.createElement('a');
-            websiteLink.href = profile.website;
-            websiteLink.className = 'btn btn-outline-primary me-2';
-            websiteLink.textContent = 'Website';
-            websiteLink.target = '_blank';
-            profileLinks.appendChild(websiteLink);
-        }
-        
-        if (profile.nip05) {
-            const nip05Badge = document.createElement('span');
-            nip05Badge.className = 'badge bg-secondary';
-            nip05Badge.textContent = profile.nip05;
-            profileLinks.appendChild(nip05Badge);
-        }
-        
-        // Show the profile card
-        profileCard.style.display = 'block';
+        // Update profile result
+        const profileResult = document.getElementById('profile-result');
+        profileResult.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    ${profile.image ? `<img src="${profile.image}" class="rounded-circle mb-3" style="max-width: 150px;">` : ''}
+                    <h5 class="card-title">${profile.name || 'Anonymous'}</h5>
+                    <p class="card-text">${profile.about || ''}</p>
+                    <div class="mt-3">
+                        ${profile.website ? `<a href="${profile.website}" class="btn btn-outline-primary me-2" target="_blank">Website</a>` : ''}
+                        ${profile.nip05 ? `<span class="badge bg-secondary">${profile.nip05}</span>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
         
     } catch (error) {
-        document.getElementById('connectionStatus').className = 'alert alert-danger';
-        document.getElementById('connectionStatus').textContent = 'Profile fetch failed: ' + error.message;
+        document.getElementById('connection-status').className = 'alert alert-danger';
+        document.getElementById('connection-status').textContent = 'Profile fetch failed: ' + error.message;
     }
 });
 
@@ -132,7 +118,7 @@ function subscribeToEvents() {
         {
             onEvent: async (event) => {
                 // Add new event to the list
-                const eventsList = document.getElementById('eventsList');
+                const blogResult = document.getElementById('blog-result');
                 const eventElement = document.createElement('div');
                 eventElement.className = 'blog-post';
                 
@@ -163,20 +149,23 @@ function subscribeToEvents() {
                     minute: '2-digit'
                 });
 
+                // Render markdown if markdown-it is initialized, otherwise use plain text
+                const renderedContent = md ? md.render(content) : content.replace(/\n/g, '<br>');
+
                 eventElement.innerHTML = `
                     <div class="event-id">ID: ${event.id.substring(0, 8)}...</div>
                     <h5 class="mt-2 mb-3">${title}</h5>
-                    <div class="content">${md.render(content)}</div>
+                    <div class="content">${renderedContent}</div>
                     <div class="author">
                         <div>Author: ${event.pubkey.substring(0, 8)}...</div>
                         <div class="text-muted">Posted on ${formattedDate}</div>
                     </div>
                 `;
-                eventsList.insertBefore(eventElement, eventsList.firstChild);
+                blogResult.insertBefore(eventElement, blogResult.firstChild);
                 
                 // Keep only the last 10 events
-                if (eventsList.children.length > 10) {
-                    eventsList.removeChild(eventsList.lastChild);
+                if (blogResult.children.length > 10) {
+                    blogResult.removeChild(blogResult.lastChild);
                 }
             }
         }

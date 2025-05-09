@@ -1,60 +1,52 @@
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
-  <title>TwentyUno</title>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('navbar.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('navbar').innerHTML = data;
-          setActiveLink('TwentyUno');
-        });
-
-      function setActiveLink(activeText) {
-        const navItems = document.querySelectorAll('nav ul li a'); // Select <a> elements
-        navItems.forEach(item => {
-          if (item.textContent.trim() === activeText) {
-            item.classList.add('active'); // Add active class to <a>
-          } else {
-            item.classList.remove('active'); // Remove active class from others
-          }
-        });
-      }
-    });
-  </script>
+  <title>TwentyUno - Bullish Prototype</title>
 </head>
 
 <body>
-
   <div class="container">
-
     <div id="navbar"></div>
 
     <br>
 
-    <h4>Twenty Uno Payment Widgets</h4>
-    <p>"Payment Widgets aims to be the easiest way to integrate bitcoin payments into your website."</p>
+    <div class="p-5 mb-4 bg-body-tertiary rounded-3">
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">TwentyUno</h1>
+        <p class="fs-4">A simple Bitcoin Lightning Network payment demo.</p>
+      </div>
+    </div>
 
-    <lightning-widget name="BULLISH" accent="#ff9900" to="bullish@getalby.com"
-      image="https://thebullishbitcoiner.files.wordpress.com/2023/08/img_5490.png"
-      background-image="https://cdn.nostr.build/i/c0f8a688816f367f990236e23feac6564a136c557e0175160a5129bd88ad7808.gif"
-      amounts="100,1000,2100" />
-    <script src="https://embed.twentyuno.net/js/app.js"></script>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Payment Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="amount" class="form-label">Amount (sats)</label>
+              <input type="number" class="form-control" id="amount" value="21">
+            </div>
+            <button id="generate-invoice" class="btn btn-primary">Generate Invoice</button>
+            <div id="invoice-result" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  </div> <!-- /container -->
-
-  <!-- Bootstrap core JavaScript
-  ================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- Bootstrap core JavaScript -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
     crossorigin="anonymous"></script>
   <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
-
+  <script type="module" src="js/common.js"></script>
+  <script type="module" src="js/twentyuno.js"></script>
 </body>
 
 </html>

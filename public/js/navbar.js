@@ -1,3 +1,6 @@
+import pkg from '../../package.json' assert { type: 'json' };
+
+export const navbarHtml = `
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">Bullish Prototype</a>
@@ -13,7 +16,26 @@
           <li class="nav-item"><a class="nav-link" href="ndk.html">NDK Demo</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="nwc.html">Nostr Wallet Connect</a></li> -->
         </ul>
-        <small>v0.2.5</small>
+        <small class="text-muted">v${pkg.version}</small>
       </div>
     </div>
   </nav>
+`;
+
+export function injectNavbar() {
+    const navbarContainer = document.getElementById('navbar');
+    if (navbarContainer) {
+        navbarContainer.innerHTML = navbarHtml;
+        
+        // Set active link based on current page
+        const currentPage = window.location.pathname.split('/').pop();
+        const navItems = document.querySelectorAll('nav ul li a');
+        navItems.forEach(item => {
+            if (item.getAttribute('href') === currentPage) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+} 

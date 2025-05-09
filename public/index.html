@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 
 <head>
@@ -5,21 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
   <title>Bullish Prototype</title>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      fetch('navbar.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('navbar').innerHTML = data;
-        });
-    });
-  </script>
 </head>
 
 <body>
-
   <div class="container">
-
     <div id="navbar"></div>
 
     <br>
@@ -29,17 +19,14 @@
         <h1 class="display-5 fw-bold">A place to experiment with all the <i>BULLISH</i> things.</h1>
       </div>
     </div>
+  </div>
 
-  </div> <!-- /container -->
-
-  <!-- Bootstrap core JavaScript
-================================================== -->
-  <!-- Placed at the end of the document so the pages load faster -->
+  <!-- Bootstrap core JavaScript -->
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"
     integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
     crossorigin="anonymous"></script>
   <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
-
+  <script type="module" src="js/common.js"></script>
 </body>
 
 </html>

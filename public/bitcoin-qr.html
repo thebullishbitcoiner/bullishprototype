@@ -1,40 +1,12 @@
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
-    <title>Bitcoin QR</title>
+    <title>Bitcoin QR - Bullish Prototype</title>
     <script type="module" src="https://unpkg.com/bitcoin-qr@1.1.4/dist/bitcoin-qr/bitcoin-qr.esm.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('navbar.html')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    document.getElementById('navbar').innerHTML = data;
-                    setActiveLink('Bitcoin QR');
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                });
-
-            function setActiveLink(activeText) {
-                const navItems = document.querySelectorAll('nav ul li a'); // Select <a> elements
-                navItems.forEach(item => {
-                    if (item.textContent.trim() === activeText) {
-                        item.classList.add('active'); // Add active class to <a>
-                    } else {
-                        item.classList.remove('active'); // Remove active class from others
-                    }
-                });
-            }
-        });
-    </script>
     <style>
         body {
             margin: 0;
@@ -56,7 +28,6 @@
 </head>
 
 <body>
-
     <div class="container-fluid">
         <div id="navbar"></div>
     
@@ -84,127 +55,125 @@
             </div>
         </div>
     </div>
-    
-</body>
 
-<script type="module">
-    import { LightningAddress } from "https://esm.sh/@getalby/lightning-tools@5.1.2";
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
+    <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
+    <script type="module" src="js/common.js"></script>
+    <script type="module">
+        import { LightningAddress } from "https://esm.sh/@getalby/lightning-tools@5.1.2";
 
-    let lightningInvoice;
-    let paid;
+        let lightningInvoice;
+        let paid;
 
-    async function checkPayment() {
-        if (!paid) {
-            paid = await lightningInvoice.verifyPayment();
-            if (paid && lightningInvoice.preimage) {
-                const qr = document.getElementById('qr');
-                qr.setAttribute('is-polling', false);
+        async function checkPayment() {
+            if (!paid) {
+                paid = await lightningInvoice.verifyPayment();
+                if (paid && lightningInvoice.preimage) {
+                    const qr = document.getElementById('qr');
+                    qr.setAttribute('is-polling', false);
 
-                simulateLightning();
+                    simulateLightning();
 
-                console.log(`Preimage: ${lightningInvoice.preimage}`);
-                document.getElementById('paid').innerText = `Paid: YESTR`;
+                    console.log(`Preimage: ${lightningInvoice.preimage}`);
+                    document.getElementById('paid').innerText = `Paid: YESTR`;
+                }
             }
         }
-    }
 
-    async function getNewInvoice(sats = 21) {
-        try {
-            const ln = new LightningAddress('thebullishbitcoiner@getalby.com');
-            await ln.fetch();
+        async function getNewInvoice(sats = 21) {
+            try {
+                const ln = new LightningAddress('thebullishbitcoiner@getalby.com');
+                await ln.fetch();
 
-            var textarea = document.getElementById('invoice');
-            textarea.value = "Generating invoice...";
+                var textarea = document.getElementById('invoice');
+                textarea.value = "Generating invoice...";
 
-            lightningInvoice = await ln.requestInvoice({ satoshi: sats });
-            textarea.value = lightningInvoice.paymentRequest;
+                lightningInvoice = await ln.requestInvoice({ satoshi: sats });
+                textarea.value = lightningInvoice.paymentRequest;
 
-            const qr = document.getElementById('qr');
-            qr.setAttribute('lightning', lightningInvoice.paymentRequest);
-            qr.setAttribute('is-polling', true);
+                const qr = document.getElementById('qr');
+                qr.setAttribute('lightning', lightningInvoice.paymentRequest);
+                qr.setAttribute('is-polling', true);
 
-            document.getElementById('paid').innerText = `Paid: NO`;
-        } catch (error) {
-            alert("Failed to fetch invoice. Operation timed out.");
-            return;
+                document.getElementById('paid').innerText = `Paid: NO`;
+            } catch (error) {
+                alert("Failed to fetch invoice. Operation timed out.");
+                return;
+            }
         }
-    }
 
-    // Function to copy text from the textarea to the clipboard
-    document.getElementById('invoice').addEventListener('click', function () {
-        this.select();
-        this.setSelectionRange(0, 99999); // For mobile devices
+        // Function to copy text from the textarea to the clipboard
+        document.getElementById('invoice').addEventListener('click', function () {
+            this.select();
+            this.setSelectionRange(0, 99999); // For mobile devices
 
-        navigator.clipboard.writeText(this.value)
-            .then(() => {
-                alert('Invoice copied to clipboard!');
-            })
-            .catch(err => {
-                console.error('Failed to copy: ', err);
-            });
-    });
+            navigator.clipboard.writeText(this.value)
+                .then(() => {
+                    alert('Invoice copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        });
 
-    document.getElementById('header').addEventListener('click', function () {
-        //simulateLightning();
-    });
+        document.getElementById('header').addEventListener('click', function () {
+            //simulateLightning();
+        });
 
-    const lightningImages = [
-        'images/lightning1.png',
-        'images/lightning2.png',
-        'images/lightning3.png',
-        'images/lightning4.png',
-        'images/lightning5.png',
-        'images/lightning6.png',
-        'images/lightning7.png',
-        'images/lightning8.png',
-    ];
+        const lightningImages = [
+            'images/lightning1.png',
+            'images/lightning2.png',
+            'images/lightning3.png',
+            'images/lightning4.png',
+            'images/lightning5.png',
+            'images/lightning6.png',
+            'images/lightning7.png',
+            'images/lightning8.png',
+        ];
 
-    function simulateLightning() {
-        const numberOfLightnings = 2; // Number of lightning images to show
-        const lightningElements = []; // Array to hold lightning elements
+        function simulateLightning() {
+            const numberOfLightnings = 2; // Number of lightning images to show
+            const lightningElements = []; // Array to hold lightning elements
 
-        for (let i = 0; i < numberOfLightnings; i++) {
-            const lightning = document.createElement('img');
-            lightning.src = lightningImages[Math.floor(Math.random() * lightningImages.length)];
-            lightning.className = 'lightning';
+            for (let i = 0; i < numberOfLightnings; i++) {
+                const lightning = document.createElement('img');
+                lightning.src = lightningImages[Math.floor(Math.random() * lightningImages.length)];
+                lightning.className = 'lightning';
 
-            document.body.appendChild(lightning);
-            lightningElements.push(lightning);
+                document.body.appendChild(lightning);
+                lightningElements.push(lightning);
 
-            setTimeout(() => {
-                lightning.style.opacity = 1; // Fade in
-            }, 10);
-
-            setTimeout(() => {
-                lightning.style.opacity = 0; // Fade out
                 setTimeout(() => {
-                    document.body.removeChild(lightning);
+                    lightning.style.opacity = 1; // Fade in
+                }, 10);
+
+                setTimeout(() => {
+                    lightning.style.opacity = 0; // Fade out
+                    setTimeout(() => {
+                        document.body.removeChild(lightning);
+                    }, 500);
                 }, 500);
-            }, 500);
+            }
+
+            lightningElements.sort(() => Math.random() - 0.5);
         }
 
-        lightningElements.sort(() => Math.random() - 0.5);
-    }
+        document.getElementById('qr').callback = checkPayment;
 
-    document.getElementById('qr').callback = checkPayment;
-
-    // Add event listener for the "Create invoice" button
-    document.getElementById('create-invoice').addEventListener('click', function () {
-        const amountInput = document.getElementById('amount');
-        const sats = parseInt(amountInput.value, 10);
-        if (isNaN(sats) || sats <= 0) {
-            alert("Please enter a valid amount of sats.");
-            return;
-        }
-        getNewInvoice(sats);
-    });
-
-</script>
-
-<!-- Bootstrap core JavaScript -->
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"
-    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
-    crossorigin="anonymous"></script>
-<script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
+        // Add event listener for the "Create invoice" button
+        document.getElementById('create-invoice').addEventListener('click', function () {
+            const amountInput = document.getElementById('amount');
+            const sats = parseInt(amountInput.value, 10);
+            if (isNaN(sats) || sats <= 0) {
+                alert("Please enter a valid amount of sats.");
+                return;
+            }
+            getNewInvoice(sats);
+        });
+    </script>
+</body>
 
 </html>

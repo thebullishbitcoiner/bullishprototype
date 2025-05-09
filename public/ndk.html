@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
     <title>NDK Demo - Bullish Prototype</title>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
     <style>
         .blog-post {
             border-left: 4px solid #0d6efd;
@@ -63,15 +64,6 @@
             margin-bottom: 1rem;
         }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('navbar.html')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('navbar').innerHTML = data;
-                });
-        });
-    </script>
 </head>
 <body>
     <div class="container">
@@ -86,54 +78,66 @@
         </div>
 
         <div class="row">
-            <div class="col-12 mb-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">NDK Connection Status</h5>
+                        <h5 class="card-title mb-0">NDK Connection</h5>
                     </div>
                     <div class="card-body">
-                        <div id="connectionStatus" class="alert alert-info">
-                            Not connected
-                        </div>
-                        <div class="d-flex gap-2">
-                            <button id="connectBtn" class="btn btn-primary">Connect to NDK</button>
-                            <button id="fetchProfileBtn" class="btn btn-secondary" disabled>Fetch Profile</button>
-                        </div>
-                        <div id="profileCard" class="profile-card">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img id="profileImage" src="" alt="Profile Picture" class="mb-3">
-                                        <h4 id="profileName"></h4>
-                                        <p id="profileAbout" class="text-muted"></p>
-                                        <div id="profileLinks" class="mt-3"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div id="connection-status" class="alert alert-info">Not connected</div>
+                        <button id="connect-button" class="btn btn-primary">Connect to NDK</button>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-12">
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">User Profile</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="npub-input" class="form-label">NPUB</label>
+                            <input type="text" class="form-control" id="npub-input" placeholder="Enter NPUB">
+                        </div>
+                        <button id="fetch-profile-button" class="btn btn-primary">Fetch Profile</button>
+                        <div id="profile-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="card-title mb-0">Blog Posts</h5>
                     </div>
                     <div class="card-body">
-                        <div id="eventsList">
-                            <!-- Events will be populated here -->
+                        <div class="mb-3">
+                            <label for="blog-npub-input" class="form-label">NPUB</label>
+                            <input type="text" class="form-control" id="blog-npub-input" placeholder="Enter NPUB">
                         </div>
+                        <button id="fetch-blog-button" class="btn btn-primary">Fetch Blog Posts</button>
+                        <div id="blog-result" class="mt-3"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+        integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+        crossorigin="anonymous"></script>
     <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <script type="module" src="js/common.js"></script>
     <script type="module" src="js/ndk-demo.js"></script>
 </body>
 </html> 
