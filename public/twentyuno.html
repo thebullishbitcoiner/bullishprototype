@@ -14,103 +14,20 @@
 
     <br>
 
-    <div class="p-5 mb-4 bg-body-tertiary rounded-3">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">TwentyUno</h1>
-        <p class="col-md-8 fs-4">Play TwentyUno with Bitcoin Lightning payments.</p>
-      </div>
-    </div>
+    <h4>Twenty Uno Payment Widgets</h4>
+    <p>"Payment Widgets aims to be the easiest way to integrate bitcoin payments into your website."</p>
 
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            Payment Details
-          </div>
-          <div class="card-body">
-            <div class="mb-3">
-              <label for="amount" class="form-label">Amount (sats)</label>
-              <input type="number" class="form-control" id="amount" min="1" value="1000">
-            </div>
-            <button id="generate-invoice" class="btn btn-primary">Generate Invoice</button>
-            <div id="invoice-result" class="mt-3"></div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">
-            Game
-          </div>
-          <div class="card-body">
-            <div id="game-container"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <lightning-widget name="BULLISH" accent="#ff9900" to="bullish@getalby.com"
+      image="https://thebullishbitcoiner.files.wordpress.com/2023/08/img_5490.png"
+      background-image="https://cdn.nostr.build/i/c0f8a688816f367f990236e23feac6564a136c557e0175160a5129bd88ad7808.gif"
+      amounts="100,1000,2100" />
+    <script src="https://embed.twentyuno.net/js/app.js"></script>
+
+  </div> <!-- /container -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
-    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
-    crossorigin="anonymous"></script>
-  <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
+  <script src="bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
   <script type="module" src="js/common.js"></script>
-  <script type="module">
-    import { LightningAddress } from "https://esm.sh/@getalby/lightning-tools@5.1.2";
-
-    // TwentyUno game functionality
-    document.addEventListener('DOMContentLoaded', () => {
-        const gameContainer = document.getElementById('game-container');
-        if (gameContainer) {
-            gameContainer.innerHTML = `
-                <div class="alert alert-info">
-                    TwentyUno game implementation coming soon...
-                </div>
-            `;
-        }
-    });
-
-    // Generate invoice button handler
-    document.getElementById('generate-invoice').addEventListener('click', async () => {
-        try {
-            const amountInput = document.getElementById('amount');
-            const sats = parseInt(amountInput.value, 10);
-            
-            if (isNaN(sats) || sats <= 0) {
-                throw new Error('Please enter a valid amount of sats');
-            }
-
-            const invoiceResult = document.getElementById('invoice-result');
-            invoiceResult.innerHTML = '<div class="alert alert-info">Generating invoice...</div>';
-
-            const ln = new LightningAddress('thebullishbitcoiner@getalby.com');
-            await ln.fetch();
-            
-            const invoice = await ln.requestInvoice({ satoshi: sats });
-            
-            invoiceResult.innerHTML = `
-                <div class="alert alert-success">
-                    <h5>Invoice Generated</h5>
-                    <p class="mb-2">Amount: ${sats} sats</p>
-                    <div class="d-flex align-items-center">
-                        <input type="text" class="form-control me-2" value="${invoice.paymentRequest}" readonly>
-                        <button class="btn btn-outline-primary" onclick="navigator.clipboard.writeText('${invoice.paymentRequest}')">
-                            Copy
-                        </button>
-                    </div>
-                </div>
-            `;
-        } catch (error) {
-            const invoiceResult = document.getElementById('invoice-result');
-            invoiceResult.innerHTML = `
-                <div class="alert alert-danger">
-                    Error generating invoice: ${error.message}
-                </div>
-            `;
-        }
-    });
-  </script>
 </body>
 
 </html>
