@@ -14,6 +14,7 @@ export const navbarHtml = `
           <li class="nav-item"><a class="nav-link" href="bitcoin-connect.html">Bitcoin Connect</a></li>
           <li class="nav-item"><a class="nav-link" href="bitcoin-qr.html">Bitcoin QR</a></li>
           <li class="nav-item"><a class="nav-link" href="ndk.html">NDK Demo</a></li>
+          <li class="nav-item"><a class="nav-link" href="lnurl-verify.html">LNURL-verify</a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="nwc.html">Nostr Wallet Connect</a></li> -->
         </ul>
         <small class="text-muted">v${pkg.version}</small>

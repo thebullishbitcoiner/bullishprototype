@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
+  <title>LNURL Verify - Bullish Prototype</title>
+</head>
+
+<body>
+  <div class="container">
+    <div id="navbar"></div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <h1 class="mb-4">LNURL-verify Demo</h1>
+        <p class="lead">Test LNURL-verify functionality by creating invoices and verifying payments.</p>
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Known LNURL-verify Providers</h5>
+          </div>
+          <div class="card-body">
+            <p class="card-text">The following providers are known to support LNURL-verify functionality:</p>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <strong>Alby</strong>
+                <span class="badge bg-success ms-auto">Verified</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <strong>Breez</strong>
+                <span class="badge bg-success ms-auto">Verified</span>
+              </li>
+            </ul>
+            <div class="mt-3">
+              <small class="text-muted">
+                <strong>Note:</strong> LNURL-verify allows you to verify payments without needing the preimage, 
+                making it easier to confirm payments from supported providers.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Create Invoice</h5>
+          </div>
+          <div class="card-body">
+            <form id="invoiceForm">
+              <div class="mb-3">
+                <label for="lightningAddress" class="form-label">Lightning Address</label>
+                <input type="text" class="form-control" id="lightningAddress" 
+                       placeholder="bullish@getalby.com" value="bullish@getalby.com">
+                <div class="form-text">Enter a lightning address to create an invoice from</div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="amount" class="form-label">Amount (sats)</label>
+                <input type="number" class="form-control" id="amount" 
+                       placeholder="1000" value="1000" min="1">
+                <div class="form-text">Amount in satoshis</div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary" id="createInvoiceBtn">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                Create Invoice
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Invoice Details</h5>
+          </div>
+          <div class="card-body">
+            <div id="invoiceDetails" class="d-none">
+              <div class="mb-3">
+                <label class="form-label">Payment Request</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="paymentRequest" readonly>
+                  <button class="btn btn-outline-secondary" type="button" id="copyPaymentRequest">
+                    Copy
+                  </button>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Payment Hash</label>
+                <input type="text" class="form-control" id="paymentHash" readonly>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Amount</label>
+                <input type="text" class="form-control" id="invoiceAmount" readonly>
+              </div>
+              
+              <div class="d-grid gap-2">
+                <button type="button" class="btn btn-success" id="verifyPaymentBtn">
+                  <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                  Verify Payment
+                </button>
+              </div>
+            </div>
+            
+            <div id="noInvoice" class="text-muted">
+              Create an invoice to see details here
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Payment Status</h5>
+          </div>
+          <div class="card-body">
+            <div id="paymentStatus" class="d-none">
+              <div class="alert alert-info" role="alert">
+                <strong>Status:</strong> <span id="statusText">Waiting for payment...</span>
+              </div>
+              <div id="paymentResult" class="d-none">
+                <div class="alert alert-success" role="alert">
+                  <strong>Payment Verified!</strong>
+                  <div class="mt-2">
+                    <small>Preimage: <code id="preimage"></code></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div id="noStatus" class="text-muted">
+              No payment verification in progress
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Log</h5>
+          </div>
+          <div class="card-body">
+            <div id="log" class="bg-dark text-light p-3 rounded" style="height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.9em;">
+              Ready to create invoices...
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+    integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ"
+    crossorigin="anonymous"></script>
+  <script src="bootstrap-5.3.3/js/bootstrap.min.js"></script>
+  <script type="module" src="js/common.js"></script>
+  <script type="module" src="js/lnurl-verify.js"></script>
+</body>
+
+</html> 
