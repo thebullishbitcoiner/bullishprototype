@@ -2,6 +2,34 @@
     "version": 2,
     "routes": [
         {
+            "src": "/lnurl-verify",
+            "dest": "/lnurl-verify.html"
+        },
+        {
+            "src": "/twentyuno",
+            "dest": "/twentyuno.html"
+        },
+        {
+            "src": "/bitcoin-connect",
+            "dest": "/bitcoin-connect.html"
+        },
+        {
+            "src": "/bitcoin-qr",
+            "dest": "/bitcoin-qr.html"
+        },
+        {
+            "src": "/ndk",
+            "dest": "/ndk.html"
+        },
+        {
+            "src": "/nostr",
+            "dest": "/nostr.html"
+        },
+        {
+            "src": "/nwc",
+            "dest": "/nwc.html"
+        },
+        {
             "src": "/(.*)",
             "dest": "/$1"
         }
