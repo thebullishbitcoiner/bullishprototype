@@ -1,7 +1,7 @@
 import pkg from '../../package.json' assert { type: 'json' };
 
 export const navbarHtml = `
-<nav class="navbar navbar-expand-lg bg-body-tertiary w-100">
+<nav class="navbar bg-black w-100">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">bullishPrototype <small class="text-muted" style="font-size: 0.6em;">v${pkg.version}</small></a>
       <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,14 +50,12 @@ function setupMobileMenu() {
     
     if (!navbarCollapse || !closeBtn || !navbarToggler) return;
     
-    // Toggle menu when clicking hamburger button
+    // Toggle menu when clicking hamburger button (works on all screen sizes)
     navbarToggler.addEventListener('click', () => {
-        if (window.innerWidth < 992) {
-            if (navbarCollapse.classList.contains('show')) {
-                closeMobileMenu();
-            } else {
-                openMobileMenu();
-            }
+        if (navbarCollapse.classList.contains('show')) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
         }
     });
     
@@ -66,29 +64,19 @@ function setupMobileMenu() {
         closeMobileMenu();
     });
     
-    // Close menu when clicking on a nav link (mobile only)
+    // Close menu when clicking on a nav link
     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            if (window.innerWidth < 992) {
-                closeMobileMenu();
-            }
+            closeMobileMenu();
         });
     });
     
-    // Close menu when clicking outside (mobile only)
+    // Close menu when clicking outside
     document.addEventListener('click', (e) => {
-        if (window.innerWidth < 992 && 
-            !navbarCollapse.contains(e.target) && 
+        if (!navbarCollapse.contains(e.target) && 
             !navbarToggler.contains(e.target) &&
             navbarCollapse.classList.contains('show')) {
-            closeMobileMenu();
-        }
-    });
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        if (window.innerWidth >= 992 && navbarCollapse.classList.contains('show')) {
             closeMobileMenu();
         }
     });

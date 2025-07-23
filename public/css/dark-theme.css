@@ -23,11 +23,14 @@ body {
 .navbar {
   background-color: #000000 !important;
   border-bottom: 1px solid #333333 !important;
+  padding: 1rem 0 !important;
+  min-height: 80px !important;
 }
 
 .navbar-brand {
   color: #ff9900 !important;
   font-weight: bold;
+  font-size: 1.5rem !important;
 }
 
 .navbar-brand:hover {
@@ -49,7 +52,13 @@ body {
 }
 
 .navbar-toggler {
-  border-color: rgba(255, 255, 255, 0.3) !important;
+  border: none !important;
+  padding: 0.5rem 0.75rem !important;
+  font-size: 1.25rem !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none !important;
 }
 
 .navbar-toggler-icon {
@@ -293,90 +302,74 @@ body {
   outline-offset: 2px !important;
 }
 
-/* Mobile menu specific dark styling */
-@media (max-width: 991.98px) {
-  .navbar-collapse {
-    position: fixed !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background-color: rgba(0, 0, 0, 0.98) !important;
-    z-index: 1050 !important;
-    display: flex !important;
-    align-items: flex-start !important;
-    justify-content: flex-end !important;
-    padding: 2rem !important;
-    transform: translateX(100%) !important;
-    transition: transform 0.3s ease-in-out !important;
-  }
-  
-  .navbar-collapse.show {
-    transform: translateX(0) !important;
-  }
-  
-  .navbar-nav {
-    flex-direction: column !important;
-    align-items: flex-end !important;
-    gap: 0.5rem !important;
-    margin-top: 3rem !important;
-    width: 100% !important;
-  }
-  
-  .nav-link {
-    color: white !important;
-    font-size: 1.5rem !important;
-    font-weight: 300 !important;
-    text-decoration: none !important;
-    transition: color 0.3s ease !important;
-    padding: 0.5rem 0 !important;
-    border-bottom: 1px solid #333333 !important;
-    width: 100% !important;
-    text-align: right !important;
-  }
-  
-  .nav-link:hover {
-    color: #ff9900 !important;
-  }
-  
-  .nav-link.active {
-    color: #ff9900 !important;
-    font-weight: 600 !important;
-  }
-  
-  .close-btn {
-    position: absolute !important;
-    top: 1rem !important;
-    right: 1rem !important;
-    background: none !important;
-    border: none !important;
-    color: white !important;
-    font-size: 2rem !important;
-    cursor: pointer !important;
-    z-index: 1051 !important;
-    width: 3rem !important;
-    height: 3rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    transition: color 0.3s ease !important;
-  }
-  
-  .close-btn:hover {
-    color: #ff9900 !important;
-  }
+/* Mobile menu specific dark styling - now works on all screen sizes */
+.navbar-collapse {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background-color: #000000 !important;
+  z-index: 1050 !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+  padding: 2rem !important;
+  transform: translateX(100%) !important;
+  transition: transform 0.3s ease-in-out !important;
 }
 
-/* Desktop styles */
-@media (min-width: 992px) {
-  .close-btn {
-    display: none !important;
-  }
-  
-  .navbar-collapse {
-    position: static !important;
-    transform: none !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-  }
+.navbar-collapse.show {
+  transform: translateX(0) !important;
+}
+
+.navbar-nav {
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 0.5rem !important;
+  margin-top: 3rem !important;
+  width: 100% !important;
+}
+
+.nav-link {
+  color: white !important;
+  font-size: 1.5rem !important;
+  font-weight: 300 !important;
+  text-decoration: none !important;
+  transition: color 0.3s ease !important;
+  padding: 0.5rem 0 !important;
+  border-bottom: 1px solid #333333 !important;
+  width: 100% !important;
+  text-align: right !important;
+}
+
+.nav-link:hover {
+  color: #ff9900 !important;
+}
+
+.nav-link.active {
+  color: #ff9900 !important;
+  font-weight: 600 !important;
+}
+
+.close-btn {
+  position: absolute !important;
+  top: 1rem !important;
+  right: 1rem !important;
+  background: none !important;
+  border: none !important;
+  color: white !important;
+  font-size: 2rem !important;
+  cursor: pointer !important;
+  z-index: 1051 !important;
+  width: 3rem !important;
+  height: 3rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: color 0.3s ease !important;
+}
+
+.close-btn:hover {
+  color: #ff9900 !important;
 } 
