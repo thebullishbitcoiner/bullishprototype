@@ -76,21 +76,20 @@
                     <textarea class="form-control" id="nofferInput" rows="4" placeholder="noffer1..."></textarea>
                 </div>
                 <button id="decodeOfferButton" class="btn mb-3" style="background-color: #ff9900; color: #000;">Decode Offer</button>
-                
-                <div id="offer-actions" class="mb-3">
-                    <div class="mb-3">
-                        <label for="amountInput" class="form-label">Amount (sats) - Optional</label>
-                        <input type="number" class="form-control" id="amountInput" placeholder="Enter amount in sats">
-                    </div>
-                    <button id="getInvoiceButton" class="btn" style="background-color: #ff9900; color: #000;">Get Invoice</button>
-                </div>
 
-                <div id="offer-result-section" class="mt-4">
+                <div id="offer-result-section" class="mt-4" style="display: none;">
                     <h6 id="result-header"></h6>
-                    <pre id="result-data" class="bg-dark p-3 rounded"></pre>
+                    <pre id="result-data" class="bg-dark p-3 rounded">Decode an offer to see details.</pre>
                     <div class="text-center mt-3">
                         <span id="qr-placeholder">QR code will appear here</span>
                         <canvas id="qrCanvas"></canvas>
+                        <div id="offer-actions" class="mt-3" style="display: none;">
+                            <div class="mb-3">
+                                <label for="amountInput" class="form-label">Amount (sats) - Optional</label>
+                                <input type="number" class="form-control" id="amountInput" placeholder="Enter amount in sats" value="100">
+                            </div>
+                            <button id="getInvoiceButton" class="btn" style="background-color: #ff9900; color: #000;">Get Invoice</button>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -35,15 +35,18 @@ function initClink() {
     let isInvoiceDisplayed = false;
 
     function resetUI() {
-        resultsSection.style.display = 'none';
-        decodeOfferButton.style.display = 'block';
-        offerActions.style.display = 'none';
-        qrCanvas.style.display = 'none';
-        qrPlaceholder.style.display = 'block';
-        decodedOffer = null;
-        isInvoiceDisplayed = false;
-        decodeOfferButton.textContent = 'Decode Offer';
-        nofferInput.disabled = false;
+        if (isInvoiceDisplayed) {
+            // Only reset if we're coming from an invoice display
+            resultsSection.style.display = 'none';
+            decodeOfferButton.style.display = 'block';
+            offerActions.style.display = 'none';
+            qrCanvas.style.display = 'none';
+            qrPlaceholder.style.display = 'block';
+            decodedOffer = null;
+            isInvoiceDisplayed = false;
+            decodeOfferButton.textContent = 'Decode Offer';
+            nofferInput.disabled = false;
+        }
     }
 
     function showQr(show) {
@@ -81,6 +84,8 @@ function initClink() {
             
             decodeOfferButton.style.display = 'none';
             offerActions.style.display = 'block';
+            qrPlaceholder.style.display = 'block';
+            qrCanvas.style.display = 'none';
         } catch (error) {
             console.error("Error decoding offer:", error);
             resultHeader.textContent = 'Error';
@@ -88,6 +93,7 @@ function initClink() {
             decodeOfferButton.style.display = 'block';
             offerActions.style.display = 'none';
             qrPlaceholder.style.display = 'block';
+            qrCanvas.style.display = 'none';
         }
         setTimeout(scrollIntoView, 100);
     };
@@ -102,9 +108,17 @@ function initClink() {
         offerActions.style.display = 'none';
         resultHeader.textContent = 'Invoice';
         resultData.textContent = 'Requesting invoice...';
+        resultsSection.style.display = 'block';
 
         try {
             const amountSats = amountInput.value ? parseInt(amountInput.value, 10) : undefined;
+
+            console.log('Requesting invoice with:', {
+                relay: decodedOffer.relay,
+                pubkey: decodedOffer.pubkey,
+                offer: decodedOffer.offer,
+                amount_sats: amountSats
+            });
 
             // Use the CLINK SDK to send a request for an invoice from the offer provider.
             // This request is sent over Nostr and signed with our ephemeral client key.
@@ -113,18 +127,27 @@ function initClink() {
                 { offer: decodedOffer.offer, amount_sats: amountSats }
             );
 
-            if ('bolt11' in response && typeof response.bolt11 === 'string') {
+            console.log('Invoice response:', response);
+
+            if (response && 'bolt11' in response && typeof response.bolt11 === 'string') {
+                resultHeader.textContent = 'Invoice';
                 resultData.textContent = response.bolt11;
+                qrPlaceholder.style.display = 'none';
                 qrCanvas.style.display = 'block';
-                QRCode.toCanvas(qrCanvas, response.bolt11.toUpperCase(), { width: 256, margin: 1 });
-            } else {
+                await QRCode.toCanvas(qrCanvas, response.bolt11.toUpperCase(), { width: 256, margin: 1 });
+            } else if (response && 'error' in response) {
                 resultHeader.textContent = 'Error Response';
+                resultData.textContent = JSON.stringify(response, null, 2);
+            } else {
+                resultHeader.textContent = 'Unexpected Response';
                 resultData.textContent = JSON.stringify(response, null, 2);
             }
         } catch (error) {
             console.error("Error getting invoice:", error);
             resultHeader.textContent = 'Error';
-            resultData.textContent = `Error: ${error instanceof Error ? error.message : String(error)}`;
+            resultData.textContent = `Error: ${error instanceof Error ? error.message : String(error)}\n\nStack: ${error instanceof Error ? error.stack : 'N/A'}`;
+            qrPlaceholder.style.display = 'block';
+            qrCanvas.style.display = 'none';
         } finally {
             isInvoiceDisplayed = true;
             decodeOfferButton.textContent = 'Reset';
