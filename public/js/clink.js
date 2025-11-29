@@ -1,4 +1,4 @@
-import { decodeBech32, SendNofferRequest, SimplePool } from "https://esm.sh/@shocknet/clink-sdk";
+import { decodeBech32, SendNofferRequest, SimplePool } from "@shocknet/clink-sdk";
 import QRCode from 'https://esm.sh/qrcode';
 import { clientPrivateKey } from "./utils.js";
 
