@@ -1,4 +1,4 @@
-import pkg from '../../package.json' assert { type: 'json' };
+import pkg from '../../package.json' with { type: 'json' };
 
 export const navbarHtml = `
 <nav class="navbar bg-black w-100">
