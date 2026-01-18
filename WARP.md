@@ -132,10 +132,11 @@ input: {
 ```
 
 ### Module Import Patterns
-This codebase uses ES modules with import maps and CDN imports:
-- NPM packages: Import from `node_modules` (e.g., `@nostr-dev-kit/ndk`)
-- External CDN: Import from `https://esm.sh/` or `https://unpkg.com/`
+This codebase uses ES modules with standardized npm package imports:
+- NPM packages: All dependencies imported from `node_modules` (e.g., `@nostr-dev-kit/ndk`, `qrcode`, `markdown-it`)
 - Local modules: Import from `./js/` with `.js` extension
+- Third-party widgets: TwentyUno and bitcoin-qr web component remain as CDN (external services)
+- All imports are bundled by Vite for optimal performance
 
 ### JSON Import Issue
 **IMPORTANT**: `navbar.js` uses deprecated `assert { type: 'json' }` syntax for package.json imports. This may break in future Node.js versions. When modifying, consider:
@@ -170,11 +171,11 @@ For Lightning functionality:
 - No rate limiting on invoice creation
 
 ### Known Issues (from REFACTORING_SUGGESTIONS.md)
-1. Typo in `bitcoin-qr.html` line 85: "YESTR" should be "YES"
-2. Deprecated JSON import syntax in `navbar.js`
+1. Typo in `bitcoin-qr.html` line 122: "YESTR" is intentional
+2. ~~Deprecated JSON import syntax in `navbar.js`~~ ✅ Fixed in v0.5.3
 3. Large inline scripts in some HTML files (should be extracted)
 4. No tests, linting, or type checking configured
-5. Mix of CDN and npm package imports (consider standardizing)
+5. ~~Mix of CDN and npm package imports~~ ✅ Fixed in v0.5.4 - all standardized to npm
 
 ### Deployment
 - Production: Vercel (configured via `vercel.json`)

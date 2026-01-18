@@ -1,5 +1,5 @@
 import { decodeBech32, SendNofferRequest, SimplePool } from "@shocknet/clink-sdk";
-import QRCode from 'https://esm.sh/qrcode';
+import QRCode from 'qrcode';
 import { clientPrivateKey } from "./utils.js";
 
 // Wait for DOM to be ready

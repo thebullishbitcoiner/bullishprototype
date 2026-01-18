@@ -1,4 +1,5 @@
 import NDK from "@nostr-dev-kit/ndk";
+import markdownit from "markdown-it";
 
 // Initialize NDK
 const ndk = new NDK({
@@ -9,18 +10,11 @@ const ndk = new NDK({
     ]
 });
 
-// Initialize markdown-it after the script is loaded
-let md;
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof window.markdownit === 'function') {
-        md = window.markdownit({
-            html: true,
-            linkify: true,
-            typographer: true
-        });
-    } else {
-        console.error('markdown-it not loaded');
-    }
+// Initialize markdown-it
+const md = markdownit({
+    html: true,
+    linkify: true,
+    typographer: true
 });
 
 // Cache for profile names

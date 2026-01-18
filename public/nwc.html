@@ -25,7 +25,7 @@
       <script src="bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/common.js"></script>
     <script type="module">
-        import { nwc } from "https://esm.sh/@getalby/sdk@3.7.0";
+        import { NWCClient } from "@getalby/sdk";
 
         const NWC_CONNECTION_SECRET =
             "nostr+walletconnect://5ab65d2fc016f245eebf5ff760ef7c15acd6d930079052e8813217b18d4c0cda?relay=wss://relay.getalby.com/v1&secret=86db39f1e6d97a5bad4ca827659523e784511eb6816bbf20a1b790b9a855b5f6&lud16=thebullishbitcoiner@getalby.com";
@@ -59,7 +59,7 @@
 
         const fetchTransactions = async () => {
             try {
-                const client = new nwc.NWCClient({
+                const client = new NWCClient({
                     nostrWalletConnectUrl: NWC_CONNECTION_SECRET,
                 });
                 const txResponse = await client.listTransactions({});

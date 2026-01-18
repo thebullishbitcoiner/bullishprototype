@@ -1,4 +1,4 @@
-import { generateSecretKey } from 'https://esm.sh/nostr-tools/pure';
+import { generateSecretKey } from 'nostr-tools/pure';
 
 // Generate or retrieve a client private key
 // In a production app, you'd want to persist this in localStorage or similar
