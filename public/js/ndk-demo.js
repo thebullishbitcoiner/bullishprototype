@@ -53,56 +53,72 @@ async function replaceNostrMentions(content) {
     return processedContent;
 }
 
-// Connect button handler
-document.getElementById('connect-button').addEventListener('click', async () => {
-    try {
-        await ndk.connect();
-        document.getElementById('connection-status').className = 'alert alert-success';
-        document.getElementById('connection-status').textContent = 'Connected to NDK!';
-        
-        // Enable the fetch profile button
-        document.getElementById('fetch-profile-button').disabled = false;
-        
-        // Subscribe to some events after connection
-        subscribeToEvents();
-    } catch (error) {
-        document.getElementById('connection-status').className = 'alert alert-danger';
-        document.getElementById('connection-status').textContent = 'Connection failed: ' + error.message;
+function initNDKDemo() {
+    const connectButton = document.getElementById('connect-button');
+    const fetchProfileButton = document.getElementById('fetch-profile-button');
+
+    if (!connectButton || !fetchProfileButton) {
+        console.warn('NDK demo elements not found; skipping init');
+        return;
     }
-});
 
-// Fetch profile button handler
-document.getElementById('fetch-profile-button').addEventListener('click', async () => {
-    try {
-        const npub = document.getElementById('npub-input').value;
-        if (!npub) {
-            throw new Error('Please enter an NPUB');
+    // Connect button handler
+    connectButton.addEventListener('click', async () => {
+        try {
+            await ndk.connect();
+            document.getElementById('connection-status').className = 'alert alert-success';
+            document.getElementById('connection-status').textContent = 'Connected to NDK!';
+            
+            // Enable the fetch profile button
+            fetchProfileButton.disabled = false;
+            
+            // Subscribe to some events after connection
+            subscribeToEvents();
+        } catch (error) {
+            document.getElementById('connection-status').className = 'alert alert-danger';
+            document.getElementById('connection-status').textContent = 'Connection failed: ' + error.message;
         }
+    });
 
-        const user = ndk.getUser({ npub: npub });
-        const profile = await user.fetchProfile();
-        
-        // Update profile result
-        const profileResult = document.getElementById('profile-result');
-        profileResult.innerHTML = `
-            <div class="card">
-                <div class="card-body">
-                    ${profile.image ? `<img src="${profile.image}" class="rounded-circle mb-3" style="max-width: 150px;">` : ''}
-                    <h5 class="card-title">${profile.name || 'Anonymous'}</h5>
-                    <p class="card-text">${profile.about || ''}</p>
-                    <div class="mt-3">
-                        ${profile.website ? `<a href="${profile.website}" class="btn btn-outline-primary me-2" target="_blank">Website</a>` : ''}
-                        ${profile.nip05 ? `<span class="badge bg-secondary">${profile.nip05}</span>` : ''}
+    // Fetch profile button handler
+    fetchProfileButton.addEventListener('click', async () => {
+        try {
+            const npub = document.getElementById('npub-input').value;
+            if (!npub) {
+                throw new Error('Please enter an NPUB');
+            }
+
+            const user = ndk.getUser({ npub: npub });
+            const profile = await user.fetchProfile();
+            
+            // Update profile result
+            const profileResult = document.getElementById('profile-result');
+            profileResult.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        ${profile.image ? `<img src="${profile.image}" class="rounded-circle mb-3" style="max-width: 150px;">` : ''}
+                        <h5 class="card-title">${profile.name || 'Anonymous'}</h5>
+                        <p class="card-text">${profile.about || ''}</p>
+                        <div class="mt-3">
+                            ${profile.website ? `<a href="${profile.website}" class="btn btn-outline-primary me-2" target="_blank">Website</a>` : ''}
+                            ${profile.nip05 ? `<span class="badge bg-secondary">${profile.nip05}</span>` : ''}
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        
-    } catch (error) {
-        document.getElementById('connection-status').className = 'alert alert-danger';
-        document.getElementById('connection-status').textContent = 'Profile fetch failed: ' + error.message;
-    }
-});
+            `;
+            
+        } catch (error) {
+            document.getElementById('connection-status').className = 'alert alert-danger';
+            document.getElementById('connection-status').textContent = 'Profile fetch failed: ' + error.message;
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNDKDemo);
+} else {
+    initNDKDemo();
+}
 
 // Function to subscribe to events
 function subscribeToEvents() {
