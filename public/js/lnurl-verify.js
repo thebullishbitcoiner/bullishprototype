@@ -199,7 +199,12 @@ class LNURLVerifyDemo {
     }
 }
 
-// Initialize the demo when the page loads
-document.addEventListener('DOMContentLoaded', () => {
+function initLNURLVerifyDemo() {
     new LNURLVerifyDemo();
-}); 
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLNURLVerifyDemo);
+} else {
+    initLNURLVerifyDemo();
+} 

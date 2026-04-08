@@ -40,6 +40,10 @@
                 <span class="badge bg-success ms-auto">Verified</span>
               </li>
               <li class="list-group-item d-flex align-items-center">
+                <strong>Cake Wallet</strong>
+                <span class="badge bg-success ms-auto">Verified</span>
+              </li>
+              <li class="list-group-item d-flex align-items-center">
                 <strong>Coinos</strong>
                 <span class="badge bg-success ms-auto">Verified</span>
               </li>
@@ -70,7 +74,7 @@
             <h5 class="card-title mb-0">Create Invoice</h5>
           </div>
           <div class="card-body">
-            <form id="invoiceForm">
+            <form id="invoiceForm" onsubmit="event.preventDefault()">
               <div class="mb-3">
                 <label for="lightningAddress" class="form-label">Lightning Address</label>
                 <input type="text" class="form-control" id="lightningAddress" 
