@@ -5,7 +5,6 @@ import markdownit from "markdown-it";
 const ndk = new NDK({
     explicitRelayUrls: [
         'wss://relay.damus.io',
-        'wss://relay.nostr.band',
         'wss://relay.primal.net'
     ]
 });
