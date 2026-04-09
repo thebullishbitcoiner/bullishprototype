@@ -64,10 +64,15 @@ function initNDKDemo() {
 
     // Connect button handler
     connectButton.addEventListener('click', async () => {
+        const statusEl = document.getElementById('connection-status');
         try {
-            await ndk.connect();
-            document.getElementById('connection-status').className = 'alert alert-success';
-            document.getElementById('connection-status').textContent = 'Connected to NDK!';
+            connectButton.disabled = true;
+            statusEl.className = 'alert alert-warning';
+            statusEl.textContent = 'Connecting to relays…';
+            // NDK pool.connect(undefined) can hang until *every* relay connects; always pass a timeout.
+            await ndk.connect(12_000);
+            statusEl.className = 'alert alert-success';
+            statusEl.textContent = 'Connected to NDK!';
             
             // Enable the fetch profile button
             fetchProfileButton.disabled = false;
@@ -75,8 +80,10 @@ function initNDKDemo() {
             // Subscribe to some events after connection
             subscribeToEvents();
         } catch (error) {
-            document.getElementById('connection-status').className = 'alert alert-danger';
-            document.getElementById('connection-status').textContent = 'Connection failed: ' + error.message;
+            statusEl.className = 'alert alert-danger';
+            statusEl.textContent = 'Connection failed: ' + error.message;
+        } finally {
+            connectButton.disabled = false;
         }
     });
 
