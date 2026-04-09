@@ -3,141 +3,156 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-      <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="css/dark-theme.css" />
-  <title>NDK Demo - bullishPrototype</title>
+    <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/dark-theme.css" />
+    <title>NDK Demo - bullishPrototype</title>
     <style>
-        .blog-post {
-            border-left: 4px solid #ff9900;
-            margin-bottom: 1.5rem;
-            padding: 1.5rem;
-            background-color: rgba(255, 153, 0, 0.1);
-            border-radius: 0.375rem;
-            color: #ffffff;
-        }
-        .blog-post:hover {
-            background-color: rgba(255, 153, 0, 0.15);
-        }
-        .blog-post .event-id {
-            color: #888888;
+        #ndk-connection-card .relay-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px solid rgba(255, 153, 0, 0.15);
             font-size: 0.875rem;
         }
-        .blog-post .content {
-            margin: 1rem 0;
+        #ndk-connection-card .relay-row:last-child {
+            border-bottom: none;
+        }
+        #ndk-connection-card code {
+            font-size: 0.8rem;
+            word-break: break-all;
+        }
+        .event-preview {
+            max-width: 36rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        #search-results-tbody tr[data-event-index] {
+            cursor: pointer;
+        }
+        #search-results-tbody tr[data-event-index]:hover {
+            background-color: rgba(255, 153, 0, 0.08);
+        }
+        #event-detail-modal .ndk-field-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--bs-secondary-color);
+            margin-bottom: 0.15rem;
+        }
+        #event-detail-modal pre.ndk-content-pre {
+            font-size: 0.8125rem;
             white-space: pre-wrap;
-            color: #ffffff;
+            word-break: break-word;
+            max-height: 40vh;
+            overflow: auto;
         }
-        .blog-post .content p {
-            margin-bottom: 1rem;
-        }
-        .blog-post .content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 0.375rem;
-            margin: 1rem 0;
-        }
-        .blog-post .content a {
-            color: #ff9900;
-            text-decoration: none;
-        }
-        .blog-post .content a:hover {
-            text-decoration: underline;
-        }
-        .blog-post .content blockquote {
-            border-left: 4px solid #888888;
-            padding-left: 1rem;
-            margin: 1rem 0;
-            color: #888888;
-        }
-        .blog-post .author {
-            color: #ff9900;
-            font-size: 0.875rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .profile-card {
-            margin-top: 1rem;
-            display: none;
-        }
-        .profile-card img {
-            max-width: 150px;
-            border-radius: 50%;
-            margin-bottom: 1rem;
+        #kind-select {
+            min-height: 12rem;
         }
     </style>
 </head>
-  <body>
+<body>
     <div id="navbar"></div>
-    
-    <div id="main-content" class="container">
+
+    <div id="main-content" class="container pb-5">
         <br>
-        
+
         <div class="p-3 mb-4 bg-body-tertiary rounded-3">
             <div class="container-fluid py-3">
                 <h1 class="display-6 fw-bold">NDK Demo</h1>
-                <p class="fs-5">A demonstration of the Nostr Development Kit (NDK) functionality.</p>
+                <p class="fs-5 mb-0">Search events by author (npub) and kind using the Nostr Development Kit.</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">NDK Connection</h5>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card" id="ndk-connection-card">
+                    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <h5 class="card-title mb-0">NDK status</h5>
+                        <span id="ndk-overall-status" class="badge bg-secondary">Starting…</span>
                     </div>
                     <div class="card-body">
-                        <div id="connection-status" class="alert alert-info">Not connected</div>
-                        <button id="connect-button" class="btn btn-primary">Connect to NDK</button>
+                        <p class="text-muted small mb-2" id="ndk-status-message">Connecting to relays in the background…</p>
+                        <div id="ndk-relay-list" class="mt-2"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <br>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card">
+        <div class="row g-4">
+            <div class="col-lg-5">
+                <div class="card h-100">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">User Profile</h5>
+                        <h5 class="card-title mb-0">Search</h5>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="npub-input" class="form-label">NPUB</label>
-                            <input type="text" class="form-control" id="npub-input" placeholder="Enter NPUB">
-                        </div>
-                        <button id="fetch-profile-button" class="btn btn-primary">Fetch Profile</button>
-                        <div id="profile-result" class="mt-3"></div>
+                        <form id="ndk-search-form" novalidate>
+                            <div class="mb-3">
+                                <label for="search-npub" class="form-label">Author npub <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control font-monospace" id="search-npub"
+                                    placeholder="npub1…" required autocomplete="off" spellcheck="false">
+                                <div class="form-text">Bech32 npub of the author to filter on.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="kind-select" class="form-label">Kinds <span class="text-danger">*</span></label>
+                                <select id="kind-select" class="form-select" multiple required aria-describedby="kind-help"></select>
+                                <div id="kind-help" class="form-text">Hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd> or <kbd>Shift</kbd> to select multiple kinds.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="search-limit" class="form-label">Max results</label>
+                                <input type="number" class="form-control" id="search-limit" min="1" max="500" value="100">
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="search-button">
+                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                Search
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <br>
-
-        <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Blog Posts</h5>
+                        <h5 class="card-title mb-0">Results</h5>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="blog-npub-input" class="form-label">NPUB</label>
-                            <input type="text" class="form-control" id="blog-npub-input" placeholder="Enter NPUB">
+                        <div id="search-results-empty" class="text-muted">Run a search to see events.</div>
+                        <div id="search-results-table-wrap" class="d-none table-responsive">
+                            <table class="table table-hover table-sm align-middle mb-0" id="search-results-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Kind</th>
+                                        <th scope="col">Created</th>
+                                        <th scope="col">Preview</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-results-tbody"></tbody>
+                            </table>
                         </div>
-                        <button id="fetch-blog-button" class="btn btn-primary">Fetch Blog Posts</button>
-                        <div id="blog-result" class="mt-3"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap core JavaScript -->
-      <script src="bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="event-detail-modal" tabindex="-1" aria-labelledby="event-detail-modal-title" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-secondary">
+                    <h2 class="modal-title fs-5" id="event-detail-modal-title">Event</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="event-detail-modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="bootstrap-5.3.3/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="js/main.jsx"></script>
     <script type="module" src="js/ndk-demo.js"></script>
 </body>
-</html> 
+</html>
